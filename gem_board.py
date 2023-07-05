@@ -25,9 +25,9 @@ def initBoard(x, y):
       row2.append("🌑")
     board.append(row2)
     board_a.append(row)
-    if gems == 0:
-      gems += 1
-      board_a[random.randint(0, y-1)][random.randint(0,x-1)] = gem
+  if gems == 0:
+    gems += 1
+    board_a[random.randint(0, y-1)][random.randint(0,x-1)] = gem
   return bomb
 
 def displayBoard():
