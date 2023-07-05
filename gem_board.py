@@ -7,7 +7,7 @@ gem = "💎"
 
 def initBoard(x, y):
   global gems
-  gem_rate = 10
+  gem_rate = 15
   bomb = 0
   for i in range(y):
     row = []
