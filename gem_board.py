@@ -7,7 +7,7 @@ gem = "💎"
 
 def initBoard(x, y):
   global gems
-  gem_rate = 5
+  gem_rate = 10
   bomb = 0
   for i in range(y):
     row = []
@@ -17,7 +17,7 @@ def initBoard(x, y):
       if roll == 0:
         row.append(gem)
         gems += 1
-      elif random.randint(0, 100) == 0:
+      elif random.randint(0, 50) == 0:
         row.append("💣")
         bomb+=1
       else:
@@ -25,6 +25,9 @@ def initBoard(x, y):
       row2.append("🌑")
     board.append(row2)
     board_a.append(row)
+    if gems == 0:
+      gems += 1
+      board_a[random.randint(0, y-1)][random.randint(0,x-1)] = gem
   return bomb
 
 def displayBoard():
