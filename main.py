@@ -19,6 +19,8 @@ health = 100
 tool = 1
 maxTool = 4
 
+mined_gems = 0
+
 def displayHUD():
   bar = ""
   for i in range(int(health/10)):
@@ -29,8 +31,9 @@ def displayHUD():
   print("TOOL POWER:", tool)
 
 def handle_key():
-  global posX, posY, cursor2, tool, health
+  global posX, posY, cursor2, tool, health, mined_gems, board
   # Read Keys
+  dead = 0
   k = readkey()
   board[posY][posX] = cursor2
   if k == key.SPACE:
@@ -52,11 +55,70 @@ def handle_key():
   elif k == '3':
     tool = 3
   elif k == key.ENTER:
-    clearX(tool, posX, posY)
-    clearY(tool, posX, posY)
-
-    health = health - random.randint(tool+5, 2*(tool+3))
     
+
+    if tool == 0 or tool == 1:
+      res = 0
+      res2 = 0
+      res, res2 = clearX(tool, posX, posY)
+      mined_gems += res
+      dead += res2
+      res, res2 = clearY(tool, posX, posY)
+      mined_gems += res
+      dead += res2
+    elif tool==2:
+      minX = posX-tool+1
+      maxX = posX+tool
+      minY = posY-tool+1
+      maxY = posY+tool
+      
+      maxX = len(board) if maxX > len(board) else maxX
+      minX = 0 if minX < 0 else minX
+      maxY = len(board) if maxY > len(board) else maxY
+      minY = 0 if minY < 0 else minY
+      
+      for i in range(minY, maxY):
+        for j in range(minX, maxX):
+          board[i][j] = board_a[i][j]
+          if board_a[i][j] == "💣":
+            dead += 1
+          if board_a[i][j] == gem: 
+            mined_gems += 1
+    else:
+      tool=2
+      minX = posX-tool+1
+      maxX = posX+tool
+      minY = posY-tool+1
+      maxY = posY+tool
+      
+      maxX = len(board) if maxX > len(board) else maxX
+      minX = 0 if minX < 0 else minX
+      maxY = len(board) if maxY > len(board) else maxY
+      minY = 0 if minY < 0 else minY
+      
+      for i in range(minY, maxY):
+        for j in range(minX, maxX):
+          if posX != j and posY != i:
+            board[i][j] = board_a[i][j]
+            if board_a[i][j] == "💣":
+              dead += 1
+            if board_a[i][j] == "💎": 
+              mined_gems += 1
+      res = 0
+      res2 = 0
+      res, res2 = clearX(2, posX, posY)
+      mined_gems += res
+      dead += res2
+      res, res2 = clearY(2, posX, posY)
+      mined_gems += res
+      dead += res2
+  
+      
+      tool=3
+      
+    health = health - random.randint(10*tool, 15*(tool))
+    if dead > 0:
+      health -= 100
     clear()
     displayHUD()
     displayBoard()
@@ -65,8 +127,10 @@ def handle_key():
   cursor2 = board[posY][posX]
   board[posY][posX] = cursor
 
+bomb_cnt = 0
+
 if __name__ == "__main__":
-  initBoard(COL,ROWS)
+  bomb_cnt = initBoard(COL,ROWS)
   cursor2 = board[posY][posX]
   board[posY][posX] = cursor
   
@@ -74,17 +138,22 @@ if __name__ == "__main__":
     clear()
     if health <= 0:
       print("GAME OVER!")
+      
+      board[posY][posX] = cursor2
       displayBoard()
       break
     displayHUD()
     displayBoard()
-
+    
+    print("You have mined", mined_gems, "!")
+    print("There are", bomb_cnt, "bombs")
     print("Use Arrow keys to move.")
     print("Press 0, 1, 2, 3, or SPACE to cycle tool..")
     print("Press ENTER to hit the rock!")
 
     handle_key()
-    
+
+print("You mined", mined_gems)
 
   
     
