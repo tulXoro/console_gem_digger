@@ -16,7 +16,7 @@ posY = 0
 
 # Gameplay vars
 health = 100
-tool = 1
+tool = 0
 maxTool = 4
 
 mined_gems = 0
